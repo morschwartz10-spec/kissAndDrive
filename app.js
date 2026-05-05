@@ -243,12 +243,15 @@ function renderRegisterView(container) {
                 <div class="form-group">
                     <label>חודשים מועדפים (אופציונלי)</label>
                     <div class="checkbox-grid">
-                        ${MONTHS.map((m, idx) => `
+                        ${MONTHS.map((m, idx) => {
+                            if (idx === 6 || idx === 7) return ''; // Exclude July and August
+                            return `
                             <label class="checkbox-btn">
                                 <input type="checkbox" name="months" value="${idx}">
                                 <span class="checkmark" style="font-size: 0.8rem;">${m}</span>
                             </label>
-                        `).join('')}
+                            `;
+                        }).join('')}
                     </div>
                 </div>
             </div>
@@ -283,7 +286,7 @@ function renderRegisterView(container) {
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> שומר...';
         
         const name = document.getElementById('nameInput').value;
-        const phone = document.getElementById('phoneInput').value;
+        const phone = document.getElementById('phoneInput').value.replace(/-/g, '');
         const specificDate = document.getElementById('specificDateInput').value;
         const grades = Array.from(document.querySelectorAll('input[name="grades"]:checked')).map(cb => cb.value);
         const prefMonths = Array.from(document.querySelectorAll('input[name="months"]:checked')).map(cb => cb.value);
@@ -293,7 +296,7 @@ function renderRegisterView(container) {
         if (days.length === 0 && !specificDate) { showToast('אנא בחר יום בשבוע או תאריך ספציפי'); btn.disabled=false; return; }
         
         try {
-            const existingUser = appData.volunteers.find(v => v.phone === phone);
+            const existingUser = appData.volunteers.find(v => (v.phone || '').replace(/-/g, '') === phone);
             let volunteerIdToUse = '';
             
             if (existingUser) {
@@ -355,10 +358,10 @@ function renderManageView(container) {
     container.appendChild(card);
     
     document.getElementById('searchShiftsBtn').addEventListener('click', () => {
-        const phone = document.getElementById('managePhone').value.trim();
+        const phone = document.getElementById('managePhone').value.trim().replace(/-/g, '');
         if (!phone) { showToast('נא להזין מספר טלפון'); return; }
         
-        const volunteer = appData.volunteers.find(v => v.phone === phone);
+        const volunteer = appData.volunteers.find(v => (v.phone || '').replace(/-/g, '') === phone);
         if (!volunteer) {
             showToast('לא מצאנו משתמש עם מספר הטלפון הזה');
             return;
@@ -791,10 +794,10 @@ window.openDirectSignUp = function(dateStr) {
 };
 
 async function handleModalSubmit() {
-    const phone = document.getElementById('modalPhoneInput').value.trim();
+    const phone = document.getElementById('modalPhoneInput').value.trim().replace(/-/g, '');
     if(!phone) { showToast('נא להזין מספר טלפון'); return; }
     
-    const volunteer = appData.volunteers.find(v => v.phone === phone);
+    const volunteer = appData.volunteers.find(v => (v.phone || '').replace(/-/g, '') === phone);
     const dateStr = window.pendingShiftDate;
     
     document.getElementById('directSignUpModal').classList.remove('show');
