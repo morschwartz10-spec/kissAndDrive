@@ -160,15 +160,15 @@ p {
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(6, 1fr); /* Sun-Fri */
-    gap: 8px;
+    gap: 4px;
 }
 
 .day-name {
     text-align: center;
     font-weight: 700;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: var(--text-light);
-    padding-bottom: 10px;
+    padding-bottom: 5px;
 }
 
 .day-cell {
@@ -179,7 +179,7 @@ p {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding: 5px;
+    padding: 2px;
     position: relative;
     border: 1px solid var(--border);
     cursor: pointer;
@@ -198,9 +198,9 @@ p {
 }
 
 .day-number {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     font-weight: 600;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
 }
 
 .day-status {

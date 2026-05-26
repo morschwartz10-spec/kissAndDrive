@@ -675,7 +675,10 @@ function generateCalendarGrid(gridEl, listEl, isAdmin) {
             <div class="day-status ${statusClass}"></div>
         `;
 
-        if (shift.length > 0 || (date >= new Date(new Date().setHours(0, 0, 0, 0)) && shift.length < 2)) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (date >= today) {
             hasShiftsToShow = true;
             const shiftItem = createShiftListItem(date, shift, isAdmin);
             shiftItem.id = `shift-row-${dateStr}`;
@@ -691,7 +694,7 @@ function generateCalendarGrid(gridEl, listEl, isAdmin) {
                 }
             };
         } else {
-            cell.onclick = () => showToast('אין משמרת פעילה ביום זה');
+            cell.onclick = () => showToast('תאריך זה עבר');
         }
 
         gridEl.appendChild(cell);
@@ -729,7 +732,7 @@ function createShiftListItem(date, shift, isAdmin) {
     let volunteersHtml = '';
 
     if (shift.length === 0) {
-        volunteersHtml = `<div class="volunteer-badge missing" style="margin-bottom:5px;"><i class="fas fa-exclamation-circle"></i> חסרים מתנדבים</div>`;
+        volunteersHtml = `<div style="color:var(--danger); font-size:0.85rem; text-align:right; width:100%; margin-bottom:5px;"><i class="fas fa-exclamation-circle"></i> טרם שובצו מתנדבים</div>`;
     } else {
         volunteersHtml = shift.map(s => {
             const v = getVolunteerById(s.volunteerId);
@@ -760,15 +763,15 @@ function createShiftListItem(date, shift, isAdmin) {
     // Add Direct Signup Button for Guests if missing
     if (isMissing && !isAdmin && date >= new Date(new Date().setHours(0, 0, 0, 0))) {
         volunteersHtml += `
-            <div style="display:flex; flex-direction:column; align-items:flex-end;">
-                ${shift.length === 1 ? '<div class="volunteer-badge missing" style="margin-top:5px;"><i class="fas fa-plus"></i> חסר מתנדב</div>' : ''}
+            <div style="display:flex; flex-direction:column; align-items:flex-end; width:100%;">
+                ${shift.length === 1 ? '<div style="color:var(--danger); font-size:0.85rem; margin-top:5px; text-align:right;"><i class="fas fa-exclamation-circle"></i> חסר מתנדב 1</div>' : ''}
                 <button class="btn-direct-signup" onclick="window.openDirectSignUp('${formatDate(date)}')">
                     <i class="fas fa-bolt"></i> אני אתנדב ליום זה!
                 </button>
             </div>
         `;
     } else if (isMissing && isAdmin) {
-        volunteersHtml += `<div class="volunteer-badge missing" style="margin-top:5px;"><i class="fas fa-plus"></i> חסר מתנדב</div>`;
+        volunteersHtml += `<div style="color:var(--danger); font-size:0.85rem; margin-top:5px; text-align:right; width:100%;"><i class="fas fa-exclamation-circle"></i> חסר מתנדב 1</div>`;
     }
 
     item.innerHTML = `
