@@ -717,6 +717,16 @@ function generateAdminShiftsList(listEl) {
     const month = appData.currentMonth.getMonth();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
+    const todayGrid = new Date();
+    todayGrid.setHours(0, 0, 0, 0);
+
+    const pastContainer = document.createElement('details');
+    pastContainer.style.marginBottom = '15px';
+    pastContainer.innerHTML = `<summary style="cursor:pointer; color:var(--text-secondary); font-size:0.9rem; padding:10px; background:var(--bg-main); border-radius:var(--radius-sm);">הצג משמרות עבר החודש</summary><div id="pastShiftsList" style="margin-top:10px;"></div>`;
+    
+    const upcomingContainer = document.createElement('div');
+    let hasPast = false;
+
     for (let i = 1; i <= daysInMonth; i++) {
         const date = new Date(year, month, i);
         if (date.getDay() === 6) continue;
@@ -724,8 +734,20 @@ function generateAdminShiftsList(listEl) {
         const dateStr = formatDate(date);
         const shift = appData.shifts[dateStr] || [];
 
-        listEl.appendChild(createShiftListItem(date, shift, true));
+        const item = createShiftListItem(date, shift, true);
+        
+        if (date < todayGrid) {
+            hasPast = true;
+            item.style.opacity = '0.6';
+            item.style.filter = 'grayscale(100%)';
+            pastContainer.querySelector('#pastShiftsList').appendChild(item);
+        } else {
+            upcomingContainer.appendChild(item);
+        }
     }
+
+    if (hasPast) listEl.appendChild(pastContainer);
+    listEl.appendChild(upcomingContainer);
 }
 
 function createShiftListItem(date, shift, isAdmin) {

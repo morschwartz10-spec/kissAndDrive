@@ -405,6 +405,7 @@ p {
     cursor: pointer;
     transition: var(--transition);
     text-decoration: none;
+    flex-shrink: 0;
 }
 
 .btn-whatsapp:hover {
