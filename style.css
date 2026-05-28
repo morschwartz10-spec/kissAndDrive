@@ -315,26 +315,25 @@ p {
 
 /* Volunteer Direct Button */
 .btn-direct-signup {
-    background: var(--primary-light);
-    color: white;
-    border: none;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
+    background: transparent;
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 0.75rem;
+    font-weight: 500;
     cursor: pointer;
     margin-top: 5px;
     transition: var(--transition);
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    box-shadow: var(--shadow-sm);
 }
 
 .btn-direct-signup:hover {
-    background: var(--primary);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+    background: var(--primary-light);
+    color: white;
+    border-color: var(--primary-light);
 }
 
 /* Modal */

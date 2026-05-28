@@ -772,7 +772,7 @@ function createShiftListItem(date, shift, isAdmin) {
             <div style="display:flex; flex-direction:column; align-items:flex-end; width:100%;">
                 ${shift.length === 1 ? '<div style="color:var(--danger); font-size:0.85rem; margin-top:5px; text-align:right;"><i class="fas fa-exclamation-circle"></i> חסר מתנדב 1</div>' : ''}
                 <button class="btn-direct-signup" onclick="window.openDirectSignUp('${formatDate(date)}')">
-                    <i class="fas fa-bolt"></i> אני אתנדב ליום זה!
+                    <i class="fas fa-plus"></i> אני אתנדב ליום זה!
                 </button>
             </div>
         `;
