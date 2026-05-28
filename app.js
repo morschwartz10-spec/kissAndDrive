@@ -666,6 +666,12 @@ function generateCalendarGrid(gridEl, listEl, isAdmin) {
         const cell = document.createElement('div');
         cell.className = 'day-cell';
 
+        const todayGrid = new Date();
+        todayGrid.setHours(0, 0, 0, 0);
+        if (date < todayGrid) {
+            cell.classList.add('past-day');
+        }
+
         let statusClass = 'status-missing';
         if (shift.length >= 2) statusClass = 'status-full';
         else if (shift.length === 1) statusClass = 'status-partial';
