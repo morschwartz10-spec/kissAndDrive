@@ -760,7 +760,7 @@ function createShiftListItem(date, shift, isAdmin) {
     let volunteersHtml = '';
 
     if (shift.length === 0) {
-        volunteersHtml = `<div style="color:var(--danger); font-size:0.85rem; text-align:right; width:100%; margin-bottom:5px;"><i class="fas fa-exclamation-circle"></i> טרם שובצו מתנדבים</div>`;
+        volunteersHtml = `<div style="background:var(--danger-light); color:var(--danger); border:1px solid var(--danger); padding:4px 10px; border-radius:12px; font-size:0.85rem; font-weight:bold; margin-bottom:5px;"><i class="fas fa-exclamation-triangle"></i> טרם שובצו מתנדבים</div>`;
     } else {
         volunteersHtml = shift.map(s => {
             const v = getVolunteerById(s.volunteerId);
@@ -798,7 +798,7 @@ function createShiftListItem(date, shift, isAdmin) {
                 </button>
             </div>
         `;
-    } else if (isMissing && isAdmin) {
+    } else if (isMissing && isAdmin && shift.length === 1) {
         volunteersHtml += `<div style="color:var(--danger); font-size:0.85rem; margin-top:5px; text-align:right; width:100%;"><i class="fas fa-exclamation-circle"></i> חסר מתנדב 1</div>`;
     }
 
