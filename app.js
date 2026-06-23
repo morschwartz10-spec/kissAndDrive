@@ -394,8 +394,11 @@ function renderManageView(container) {
                             <strong>יום ${HEBREW_DAYS[shiftDate.getDay()]}'</strong>
                             <span>${shiftDate.getDate()}/${shiftDate.getMonth() + 1}</span>
                         </div>
-                        <div>
-                            <button class="btn btn-danger" onclick="cancelShiftParent('${dateStr}', '${volunteer.id}')" style="padding: 5px 15px; font-size: 0.9rem;">
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <a href="${getGoogleCalendarLink(dateStr)}" target="_blank" class="btn-calendar" title="הוסף ליומן גוגל">
+                                <i class="fab fa-google"></i> הוסף ליומן
+                            </a>
+                            <button class="btn btn-danger" onclick="cancelShiftParent('${dateStr}', '${volunteer.id}')" style="padding: 5px 15px; font-size: 0.9rem; width: auto; margin: 0;">
                                 ביטול / חולה
                             </button>
                         </div>
@@ -601,6 +604,15 @@ function changeMonth(delta) {
 
 function formatDate(date) {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
+function getGoogleCalendarLink(dateStr) {
+    const cleanDate = dateStr.replace(/-/g, ''); // 'YYYYMMDD'
+    const startStr = `${cleanDate}T073000`;
+    const endStr = `${cleanDate}T081500`;
+    const title = encodeURIComponent('תורנות נשק וסע 🚗');
+    const details = encodeURIComponent('תורנות הורים בעמדת נשק וסע בבית הספר. תודה על התנדבותך!');
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startStr}/${endStr}&details=${details}`;
 }
 
 function countMissingShifts() {

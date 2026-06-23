@@ -610,3 +610,26 @@ p {
     color: var(--text-secondary);
     font-weight: 500;
 }
+
+/* Calendar Button styling */
+.btn-calendar {
+    background: var(--bg-main);
+    color: var(--primary);
+    border: 1px solid var(--primary-light);
+    text-decoration: none;
+    padding: 5px 12px;
+    font-size: 0.9rem;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.btn-calendar:hover {
+    background: var(--primary-light);
+    color: white;
+    border-color: var(--primary);
+}
