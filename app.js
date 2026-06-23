@@ -324,6 +324,10 @@ function renderRegisterView(container) {
             window.pendingPhone = null;
             window.pendingShiftDate = null;
 
+            // Re-enable button before navigating away
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-check"></i> נשמרת בהצלחה!';
+
             showToast('תודה! נשמרת בהצלחה.');
             setTimeout(() => { window.location.hash = '#'; }, 2000);
 
@@ -888,26 +892,45 @@ async function scheduleVolunteerFirebase(volunteerId, preferredDaysStr, prefMont
     const preferredDays = preferredDaysStr.map(Number);
     const prefMonths = prefMonthsStr ? prefMonthsStr.map(Number) : [];
 
-    const year = appData.currentMonth.getFullYear();
-    const month = appData.currentMonth.getMonth();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-    // Just find next available matching day and write it
-    for (let i = 1; i <= 28; i++) {
-        const date = new Date(year, month, i);
-        if (date < new Date(new Date().setHours(0, 0, 0, 0))) continue;
+    // Collect all candidate dates for the next 3 months
+    const candidateDates = [];
+    for (let monthOffset = 0; monthOffset < 3; monthOffset++) {
+        const targetDate = new Date(appData.currentMonth);
+        targetDate.setMonth(targetDate.getMonth() + monthOffset);
+        const year = targetDate.getFullYear();
+        const month = targetDate.getMonth();
 
+        // Skip months not in preference list (if any preference given)
         if (prefMonths.length > 0 && !prefMonths.includes(month)) continue;
 
-        if (preferredDays.includes(date.getDay())) {
-            const dateStr = formatDate(date);
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        for (let i = 1; i <= daysInMonth; i++) {
+            const date = new Date(year, month, i);
+            if (date < today) continue;
+            if (preferredDays.includes(date.getDay())) {
+                candidateDates.push(formatDate(date));
+            }
+        }
+    }
+
+    if (candidateDates.length === 0) return;
+
+    // Use already-loaded in-memory shift data to find first available slot
+    // (avoids unnecessary Firestore reads for dates already in appData.shifts)
+    for (const dateStr of candidateDates) {
+        const existingVols = appData.shifts[dateStr] || [];
+        if (existingVols.length < 2 && !existingVols.find(s => s.volunteerId === volunteerId)) {
+            // Only one Firestore write needed
             const shiftRef = db.collection('shifts').doc(dateStr);
             const doc = await shiftRef.get();
             let vols = doc.exists ? (doc.data().volunteers || []) : [];
-
             if (vols.length < 2 && !vols.find(s => s.volunteerId === volunteerId)) {
                 vols.push({ volunteerId, status: 'confirmed' });
                 await shiftRef.set({ volunteers: vols });
-                return; // Stop after one successful placement
+                return;
             }
         }
     }
